@@ -1,5 +1,6 @@
 package io.prometheus.client;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -147,6 +148,14 @@ public class CollectorRegistryTest {
     }
   }
 
+  class MyCollector2 extends Collector {
+    public List<MetricFamilySamples> collect() {
+      List<MetricFamilySamples> mfs = new ArrayList<MetricFamilySamples>();
+      mfs.add(new GaugeMetricFamily("g", "help", 42));
+      return mfs;
+    }
+  }
+
   @Test
   public void testAutoDescribeDisabledByDefault() {
     CollectorRegistry r = new CollectorRegistry();
@@ -156,11 +165,21 @@ public class CollectorRegistryTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testAutoDescribeThrowsOnReregisteringCustomCollector() {
+  public void testRegisteringCollectorOfDifferentTypeSameName() {
     CollectorRegistry r = new CollectorRegistry(true);
-    new MyCollector().register(r);
-    new MyCollector().register(r);
+    final Collector collector1 = new MyCollector().register(r);
+    final Collector collector2 = new MyCollector2().register(r);
   }
+
+
+  @Test
+  public void testRegisteringCollectorSameName() {
+    CollectorRegistry r = new CollectorRegistry(true);
+    final Collector collector1 = new MyCollector().register(r);
+    final Collector collector2 = new MyCollector().register(r);
+    Assert.assertEquals(collector1, collector2);
+  }
+
 
   private static class SkippedCollector extends Collector implements Collector.Describable {
     public int collectCallCount = 0;

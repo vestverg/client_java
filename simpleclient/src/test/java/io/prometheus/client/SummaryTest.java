@@ -49,10 +49,10 @@ public class SummaryTest {
     return registry.getSampleValue("nolabels_sum").doubleValue();
   }
   private double getNoLabelQuantile(double q) {
-    return registry.getSampleValue("no_labels_and_quantiles", new String[]{"quantile"}, new String[]{Collector.doubleToGoString(q)}).doubleValue();
+    return registry.getSampleValue("no_labels_and_quantiles", new String[]{"quantile"}, new String[]{CollectorUtils.doubleToGoString(q)}).doubleValue();
   }
   private double getLabeledQuantile(String labelValue, double q) {
-    return registry.getSampleValue("labels_and_quantiles", new String[]{"l", "quantile"}, new String[]{labelValue, Collector.doubleToGoString(q)}).doubleValue();
+    return registry.getSampleValue("labels_and_quantiles", new String[]{"l", "quantile"}, new String[]{labelValue, CollectorUtils.doubleToGoString(q)}).doubleValue();
   }
 
   @Test
@@ -96,13 +96,13 @@ public class SummaryTest {
             .ageBuckets(2)   // We got 2 buckets, so we discard one bucket every 500ms.
             .name("short_attention_span").help("help").register(registry);
     summary.observe(8.0);
-    double val = registry.getSampleValue("short_attention_span", new String[]{"quantile"}, new String[]{Collector.doubleToGoString(0.99)}).doubleValue();
+    double val = registry.getSampleValue("short_attention_span", new String[]{"quantile"}, new String[]{CollectorUtils.doubleToGoString(0.99)}).doubleValue();
     assertEquals(8.0, val, 0.0); // From bucket 1.
     Thread.sleep(600);
-    val = registry.getSampleValue("short_attention_span", new String[]{"quantile"}, new String[]{Collector.doubleToGoString(0.99)}).doubleValue();
+    val = registry.getSampleValue("short_attention_span", new String[]{"quantile"}, new String[]{CollectorUtils.doubleToGoString(0.99)}).doubleValue();
     assertEquals(8.0, val, 0.0); // From bucket 2.
     Thread.sleep(600);
-    val = registry.getSampleValue("short_attention_span", new String[]{"quantile"}, new String[]{Collector.doubleToGoString(0.99)}).doubleValue();
+    val = registry.getSampleValue("short_attention_span", new String[]{"quantile"}, new String[]{CollectorUtils.doubleToGoString(0.99)}).doubleValue();
     assertEquals(Double.NaN, val, 0.0); // Bucket 1 again, now it is empty.
   }
 

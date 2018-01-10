@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.Enumeration;
 
 import io.prometheus.client.Collector;
+import io.prometheus.client.CollectorUtils;
 
 public class TextFormat {
   /**
@@ -45,7 +46,7 @@ public class TextFormat {
           writer.write('}');
         }
         writer.write(' ');
-        writer.write(Collector.doubleToGoString(sample.value));
+        writer.write(CollectorUtils.doubleToGoString(sample.value));
         writer.write('\n');
       }
     }

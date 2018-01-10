@@ -301,7 +301,7 @@ public class Histogram extends SimpleCollector<Histogram.Child> implements Colle
       labelNamesWithLe.add("le");
       for (int i = 0; i < v.buckets.length; ++i) {
         List<String> labelValuesWithLe = new ArrayList<String>(c.getKey());
-        labelValuesWithLe.add(doubleToGoString(buckets[i]));
+        labelValuesWithLe.add(CollectorUtils.doubleToGoString(buckets[i]));
         samples.add(new MetricFamilySamples.Sample(fullname + "_bucket", labelNamesWithLe, labelValuesWithLe, v.buckets[i]));
       }
       samples.add(new MetricFamilySamples.Sample(fullname + "_count", labelNames, c.getKey(), v.buckets[buckets.length-1]));

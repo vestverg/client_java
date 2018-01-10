@@ -1,16 +1,6 @@
 package io.prometheus.client;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A registry of Collectors.
@@ -46,19 +36,30 @@ public class CollectorRegistry {
    * <p>
    * A collector can be registered to multiple CollectorRegistries.
    */
-  public void register(Collector m) {
+  public Collector register(Collector m) {
     List<String> names = collectorNames(m);
     synchronized (collectorsToNames) {
-      for (String name : names) {
-        if (namesToCollectors.containsKey(name)) {
-          throw new IllegalArgumentException("Collector already registered that provides name: " + name);
+      Collector registeredCollector = names.stream()
+              .map(name -> this.getCollectorForName(name).orElse(null))
+              .filter(Objects::nonNull)
+              .distinct()
+              .findAny()
+              .orElse(null);
+      if (registeredCollector != null) {
+        Class<? extends Collector> collectorClass = m.getClass();
+        Class<? extends Collector> registeredCollectorClass = registeredCollector.getClass();
+        if (!collectorClass.equals(registeredCollectorClass)) {
+          throw new IllegalArgumentException("Collector already registered , you are trying register collector of another type ");
         }
+        return registeredCollector;
+      } else {
+        for (String name : names) {
+          namesToCollectors.put(name, m);
+        }
+        collectorsToNames.put(m, names);
       }
-      for (String name : names) {
-        namesToCollectors.put(name, m);
-      }
-      collectorsToNames.put(m, names);
     }
+    return m;
   }
 
   /**
@@ -132,6 +133,10 @@ public class CollectorRegistry {
 
   public Enumeration<Collector.MetricFamilySamples> filteredMetricFamilySamples(Set<String> includedNames) {
     return new MetricFamilySamplesEnumeration(includedNames);
+  }
+
+  public Optional<Collector> getCollectorForName(String name) {
+    return Optional.ofNullable(namesToCollectors.get(name));
   }
 
   class MetricFamilySamplesEnumeration implements Enumeration<Collector.MetricFamilySamples> {

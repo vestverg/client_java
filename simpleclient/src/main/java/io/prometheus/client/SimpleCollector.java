@@ -1,10 +1,10 @@
 package io.prometheus.client;
 
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Common functionality for {@link Gauge}, {@link Counter}, {@link Summary} and {@link Histogram}.
@@ -25,7 +25,7 @@ import java.util.List;
  * The fullname of the metric is <code>namespace_subsystem_name</code>, but only <code>name</code> is required.
  *
  * <h2>Labels</h2>
- * {@link SimpleCollector.Builder#labelNames labelNames} specifies which (if any) labels the metrics will have, and 
+ * {@link SimpleCollector.Builder#labelNames labelNames} specifies which (if any) labels the metrics will have, and
  * {@link #labels} returns the Child of the metric that represents that particular set of labels.
  * {@link Gauge}, {@link Counter} and {@link Summary} all offer convenience methods to avoid needing to call
  * {@link #labels} for metrics with no labels.
@@ -36,7 +36,7 @@ import java.util.List;
  * what labels will be in use you should initialise them be calling {@link #labels}.
  * This is done for you for metrics with no labels.
  * <p>
- * <em>Warning #2:</em> While labels are very powerful, avoid overly granular metric labels. 
+ * <em>Warning #2:</em> While labels are very powerful, avoid overly granular metric labels.
  * The combinatorial explosion of breaking out a metric in many dimensions can produce huge numbers
  * of timeseries, which will then take longer and more resources to process.
  * <p>
@@ -87,7 +87,7 @@ public abstract class SimpleCollector<Child> extends Collector {
     children.remove(Arrays.asList(labelValues));
     initializeNoLabelsChild();
   }
-  
+
   /**
    * Remove all children.
    * <p>
@@ -97,7 +97,7 @@ public abstract class SimpleCollector<Child> extends Collector {
     children.clear();
     initializeNoLabelsChild();
   }
-  
+
   /**
    * Initialize the child with no labels.
    */
@@ -128,7 +128,7 @@ public abstract class SimpleCollector<Child> extends Collector {
    * }
    * </pre>
    * <p>
-   * Any references any previous Child with these labelValues are invalidated. 
+   * Any references any previous Child with these labelValues are invalidated.
    * A metric should be either all callbacks, or none.
    */
   public <T extends Collector> T setChild(Child child, String... labelValues) {
@@ -161,13 +161,13 @@ public abstract class SimpleCollector<Child> extends Collector {
       name = b.namespace + '_' + name;
     }
     fullname = name;
-    checkMetricName(fullname);
+      CollectorUtils.checkMetricName(fullname);
     if (b.help.isEmpty()) throw new IllegalStateException("Help hasn't been set.");
     help = b.help;
     labelNames = Arrays.asList(b.labelNames);
 
     for (String n: labelNames) {
-      checkMetricLabelName(n);
+        CollectorUtils.checkMetricLabelName(n);
     }
 
     if (!b.dontInitializeNoLabelsChild) {
@@ -242,9 +242,9 @@ public abstract class SimpleCollector<Child> extends Collector {
      * Create and register the Collector with the given registry.
      */
     public C register(CollectorRegistry registry) {
-      C sc = create();
-      registry.register(sc);
-      return sc;
+      return (C) registry
+              .getCollectorForName(name)
+              .orElse(registry.register(create()));
     }
   }
 }

@@ -4,10 +4,7 @@ import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
-import io.prometheus.client.Collector;
-import io.prometheus.client.CounterMetricFamily;
-import io.prometheus.client.GaugeMetricFamily;
-import io.prometheus.client.SummaryMetricFamily;
+import io.prometheus.client.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -157,7 +154,7 @@ public class CacheMetricsCollector extends Collector {
                 cacheLoadFailure.addMetric(cacheName, stats.loadFailureCount());
                 cacheLoadTotal.addMetric(cacheName, stats.loadCount());
 
-                cacheLoadSummary.addMetric(cacheName, stats.loadCount(), stats.totalLoadTime() / Collector.NANOSECONDS_PER_SECOND);
+                cacheLoadSummary.addMetric(cacheName, stats.loadCount(), stats.totalLoadTime() / CollectorUtils.NANOSECONDS_PER_SECOND);
             }
         }
         return mfs;

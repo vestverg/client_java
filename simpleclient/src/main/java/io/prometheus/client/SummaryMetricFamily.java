@@ -65,7 +65,7 @@ public class SummaryMetricFamily extends Collector.MetricFamilySamples {
     labelNamesWithQuantile.add("quantile");
     for (int i = 0; i < quantiles.size(); i++) {
       List<String> labelValuesWithQuantile = new ArrayList<String>(labelValues);
-      labelValuesWithQuantile.add(Collector.doubleToGoString(this.quantiles.get(i)));
+      labelValuesWithQuantile.add(CollectorUtils.doubleToGoString(this.quantiles.get(i)));
       samples.add(new Sample(name, labelNamesWithQuantile, labelValuesWithQuantile, quantiles.get(i)));
     }
     return this;

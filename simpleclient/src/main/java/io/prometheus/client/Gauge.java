@@ -112,7 +112,7 @@ public class Gauge extends SimpleCollector<Gauge.Child> implements Collector.Des
       * @return Measured duration in seconds since {@link Child#startTimer} was called.
       */
      public double setDuration() {
-       double elapsed = (Child.timeProvider.nanoTime() - start) / NANOSECONDS_PER_SECOND;
+       double elapsed = (Child.timeProvider.nanoTime() - start) / CollectorUtils.NANOSECONDS_PER_SECOND;
        child.set(elapsed);
        return elapsed;
      }
@@ -176,7 +176,7 @@ public class Gauge extends SimpleCollector<Gauge.Child> implements Collector.Des
      * Set the gauge to the current unixtime.
      */
     public void setToCurrentTime() {
-      set(timeProvider.currentTimeMillis() / MILLISECONDS_PER_SECOND);
+      set(timeProvider.currentTimeMillis() / CollectorUtils.MILLISECONDS_PER_SECOND);
     }
     /**
      * Start a timer to track a duration.

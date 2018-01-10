@@ -1,6 +1,7 @@
 package io.prometheus.client.spring.boot;
 
 import io.prometheus.client.Collector;
+import io.prometheus.client.CollectorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.PublicMetrics;
 import org.springframework.boot.actuate.metrics.Metric;
@@ -36,7 +37,7 @@ public class SpringBootMetricsCollector extends Collector implements Collector.D
     ArrayList<MetricFamilySamples> samples = new ArrayList<MetricFamilySamples>();
     for (PublicMetrics publicMetrics : this.publicMetrics) {
       for (Metric<?> metric : publicMetrics.metrics()) {
-        String name = Collector.sanitizeMetricName(metric.getName());
+        String name = CollectorUtils.sanitizeMetricName(metric.getName());
         double value = metric.getValue().doubleValue();
         MetricFamilySamples metricFamilySamples = new MetricFamilySamples(
                 name, Type.GAUGE, name, Collections.singletonList(

@@ -324,7 +324,7 @@ public class Summary extends SimpleCollector<Summary.Child> implements Counter.D
       labelNamesWithQuantile.add("quantile");
       for(Map.Entry<Double, Double> q : v.quantiles.entrySet()) {
         List<String> labelValuesWithQuantile = new ArrayList<String>(c.getKey());
-        labelValuesWithQuantile.add(doubleToGoString(q.getKey()));
+        labelValuesWithQuantile.add(CollectorUtils.doubleToGoString(q.getKey()));
         samples.add(new MetricFamilySamples.Sample(fullname, labelNamesWithQuantile, labelValuesWithQuantile, q.getValue()));
       }
       samples.add(new MetricFamilySamples.Sample(fullname + "_count", labelNames, c.getKey(), v.count));

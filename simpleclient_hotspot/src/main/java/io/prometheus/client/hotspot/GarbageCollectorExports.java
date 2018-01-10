@@ -1,6 +1,7 @@
 package io.prometheus.client.hotspot;
 
 import io.prometheus.client.Collector;
+import io.prometheus.client.CollectorUtils;
 import io.prometheus.client.SummaryMetricFamily;
 
 import java.lang.management.GarbageCollectorMXBean;
@@ -44,7 +45,7 @@ public class GarbageCollectorExports extends Collector {
         gcCollection.addMetric(
             Collections.singletonList(gc.getName()),
             gc.getCollectionCount(),
-            gc.getCollectionTime() / MILLISECONDS_PER_SECOND);
+            gc.getCollectionTime() / CollectorUtils.MILLISECONDS_PER_SECOND);
     }
     List<MetricFamilySamples> mfs = new ArrayList<MetricFamilySamples>();
     mfs.add(gcCollection);

@@ -39,7 +39,7 @@ public class HistogramTest {
   private double getBucket(double b) {
     return registry.getSampleValue("nolabels_bucket", 
         new String[]{"le"},
-        new String[]{Collector.doubleToGoString(b)}).doubleValue();
+        new String[]{CollectorUtils.doubleToGoString(b)}).doubleValue();
   }
   
   @Test

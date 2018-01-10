@@ -1,6 +1,7 @@
 package io.prometheus.client.hotspot;
 
 import io.prometheus.client.Collector;
+import io.prometheus.client.CollectorUtils;
 import io.prometheus.client.CounterMetricFamily;
 import io.prometheus.client.GaugeMetricFamily;
 
@@ -63,14 +64,14 @@ public class StandardExports extends Collector {
       // through implemented interfaces until the method can be made accessible and invoked.
       Long processCpuTime = callLongGetter("getProcessCpuTime", osBean);
       mfs.add(new CounterMetricFamily("process_cpu_seconds_total", "Total user and system CPU time spent in seconds.",
-          processCpuTime / NANOSECONDS_PER_SECOND));
+          processCpuTime / CollectorUtils.NANOSECONDS_PER_SECOND));
     }
     catch (Exception e) {
       LOGGER.log(Level.FINE,"Could not access process cpu time", e);
     }
 
     mfs.add(new GaugeMetricFamily("process_start_time_seconds", "Start time of the process since unix epoch in seconds.",
-        runtimeBean.getStartTime() / MILLISECONDS_PER_SECOND));
+        runtimeBean.getStartTime() / CollectorUtils.MILLISECONDS_PER_SECOND));
 
     // There exist at least 2 similar but unrelated UnixOperatingSystemMXBean interfaces, in
     // com.sun.management and com.ibm.lang.management. Hence use reflection and recursively go

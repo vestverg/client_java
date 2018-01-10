@@ -64,6 +64,6 @@ public class SimpleTimer {
   }
 
   public static double elapsedSecondsFromNanos(long startNanos, long endNanos) {
-      return (endNanos - startNanos) / Collector.NANOSECONDS_PER_SECOND;
+      return (endNanos - startNanos) / CollectorUtils.NANOSECONDS_PER_SECOND;
   }
 }
